@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pgbouncer
+  namespace: moodle
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      name: pgbouncer
+  template:
+    metadata:
+      labels:
+        name: pgbouncer
+    spec:
+      containers:
+      - name: pgbouncer
+        image: bitnami/pgbouncer:1.19.1
+        ports:
+        - containerPort: 6432
+        envFrom:
+        - secretRef:
+            name: pgbouncer-config
+        resources:
+          limits:
+            cpu: 1000m
+            memory: 4Gi
+          requests:
+            cpu: 1000m
+            memory: 4Gi
+        livenessProbe:
+          tcpSocket:
+            port: 6432
+          initialDelaySeconds: 15
+          periodSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          tcpSocket:
+            port: 6432
+          initialDelaySeconds: 15
+          periodSeconds: 5
+        startupProbe:
+          tcpSocket:
+            port: 6432
+          failureThreshold: 30
+          periodSeconds: 5
+      tolerations:
+      - key: "kubernetes.azure.com/scalesetpriority"
+        operator: "Equal"
+        value: "spot"
+        effect: "NoSchedule"
+      - key: "workload-type"
+        operator: "Equal"
+        value: "pgbouncer"
+        effect: "NoSchedule"
+      nodeSelector:
+        agentpool: pgbouncer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pgbouncer-svc
+  namespace: moodle
+spec:
+  sessionAffinity: ClientIP
+  selector:
+    name: pgbouncer
+  ports:
+    - name: pgbouncer-port
+      protocol: TCP
+      port: 6432
+      targetPort: 6432

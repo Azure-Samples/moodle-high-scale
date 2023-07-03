@@ -1,57 +1,91 @@
-# Project Name
+## About this project
 
-(short, 1-3 sentenced, description of the project)
+This project deploys a robust infrastructure on Azure to handle a high scale moodle installation, this environment is able - and tested - to handle **200k concurrent users**.
 
-## Features
+It uses Azure Kubernetes Service to run Moodle, Azure Storage Account to host course content, Azure CosmosDB for PostgreSQL as its database and Azure Front Door to expose the application to the public as well as caching common used assets.
 
-This project framework provides the following features:
+![Architecture](moodle-high-scale.png)
 
-* Feature 1
-* Feature 2
-* ...
+## Create the infrastructure using terraform
 
-## Getting Started
+Provision the infrastructure.
 
-### Prerequisites
+```
+$ cd infra/
+$ az login
+$ terraform init
+$ terraform plan -var moodle-environment=production
+$ terraform apply -var moodle-environment=production
+$ az aks get-credentials --name moodle-high-scale --resource-group <resource-group>
+```
 
-(ideally very short, if any)
+Provision the NFS server to host moodle data (you will need a bastion instance for this to work)
 
-- OS
-- Library version
-- ...
+_Add your username as a Virtual Machine Admin User to moodle's data vm_
 
-### Installation
+```
+$ az network bastion ssh --name bastion --resource-group <resource-group> --target-resource-id <moodle-data-vm-id> --auth-type "AAD"
+$ # add your ~/.ssh/id_rsa.pub content to .ssh/authorized_keys
+$ cd ../ansible
+$ az network bastion tunnel --name bastion --resource-group <resource-group> --target-resource-id <moodle-data-vm-id> --resource-port 22 --port 2200
+$ ansible-playbook -u "<aad-user>" --ssh-extra-args "-p 2200" -i localhost, nfs-provisioning.yaml
+```
 
-(ideally very short)
+Provision the Redis Cluster.
 
-- npm install [package name]
-- mvn install
-- ...
+```
+$ cd ../manifests/redis-cluster
+$ kubectl apply -f redis-configmap.yaml
+$ kubectl apply -f redis-cluster.yaml
+$ kubectl apply -f redis-service.yaml
+```
 
-### Quickstart
-(Add steps to get up and running quickly)
+Wait for all the replicas to be running.
 
-1. git clone [repository clone url]
-2. cd [repository name]
-3. ...
+```
+$ ./init.sh
+```
 
+Deploy Moodle and its services.
 
-## Demo
+_Change image in moodle-service.yaml_
 
-A demo app is included to show how to use the project.
+```
+$ cd ../../images/moodle
+$ az acr build --registry moodlehighscale<suffix> -t moodle:v0.1 --file Dockerfile .
+$ cd ../../manifests
+$ kubectl apply -f pgbouncer-deployment.yaml
+$ kubectl apply -f moodle-service.yaml
+$ kubectl -n moodle get svc --watch
+```
 
-To run the demo, follow these steps:
+Provision the frontend configuration that will be used to expose Moodle and its assets publicly.
 
-(Add steps to start up the demo)
+```
+$ cd ../frontend
+$ terraform init
+$ terraform plan
+$ terraform apply
+```
 
-1.
-2.
-3.
+Approve the private endpoint connection request from Frontdoor in moodle-svc-pls resource.
 
-## Resources
+_Private Link Services > moodle-svs-pls > Private Endpoint Connections > Select the request from Front Door and click on Approve._
 
-(Any additional resources or related projects)
+Install database.
 
-- Link to supporting information
-- Link to similar sample
-- ...
+```
+$ kubectl -n moodle exec -it deployment/moodle-deployment -- /bin/bash 
+$ php /var/www/html/admin/cli/install_database.php --adminuser=admin_user --adminpass=admin_pass --agree-license
+```
+
+Deploy Moodle Cron.
+
+_Change image in moodle-cron.yaml_
+
+```
+$ cd ../manifests
+$ kubectl apply -f moodle-cron.yaml
+```
+
+Your Moodle installation is now ready to use.

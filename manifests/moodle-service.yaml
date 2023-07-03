@@ -1,0 +1,81 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: moodle-deployment
+  namespace: moodle
+  labels:
+    app: moodle
+spec:
+  replicas: 100
+  selector:
+    matchLabels:
+      app: moodle
+  template:
+    metadata:
+      labels:
+        app: moodle
+    spec:
+      containers:
+      - name: moodle
+        image: <acr-name>.azurecr.io/moodle:v0.1
+        ports:
+        - containerPort: 80
+        volumeMounts:
+        - mountPath: /var/www/moodledata
+          name: moodle-data-volume
+        - mountPath: /var/www/localdata
+          name: moodle-local-data
+        envFrom:
+        - secretRef:
+            name: moodle-config
+        resources:
+          limits:
+            cpu: 3000m
+            memory: 4Gi
+          requests:
+            cpu: 3000m 
+            memory: 4Gi
+      tolerations:
+      - key: "kubernetes.azure.com/scalesetpriority"
+        operator: "Equal"
+        value: "spot"
+        effect: "NoSchedule"
+      - key: "workload-type"
+        operator: "Equal"
+        value: "app"
+        effect: "NoSchedule"
+      nodeSelector:
+        agentpool: app
+      volumes:
+      - name: moodle-data-volume
+        nfs:
+          server: moodle-data
+          path: /data/moodle-data
+      - name: moodle-local-data
+        emptyDir:
+          sizeLimit: 1Gi
+          medium: Memory
+---
+# https://cloud-provider-azure.sigs.k8s.io/topics/pls-integration/
+apiVersion: v1
+kind: Service
+metadata:
+  name: moodle-svc
+  namespace: moodle
+  annotations:
+    service.beta.kubernetes.io/azure-load-balancer-internal: "true"
+    service.beta.kubernetes.io/azure-pls-create: "true"
+    service.beta.kubernetes.io/azure-pls-name: moodle-svc-pls
+    service.beta.kubernetes.io/azure-pls-ip-configuration-subnet: "app"
+    service.beta.kubernetes.io/azure-pls-ip-configuration-ip-address-count: "1"
+    service.beta.kubernetes.io/azure-pls-proxy-protocol: "false"
+    service.beta.kubernetes.io/azure-pls-visibility: "*"
+spec:
+  type: LoadBalancer
+  selector:
+    app: moodle
+  ports:
+    - name: moodle-port
+      protocol: TCP
+      port: 80
+      targetPort: 80

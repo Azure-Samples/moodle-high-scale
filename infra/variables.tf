@@ -1,0 +1,69 @@
+variable "moodle-high-scale-rg" {
+  type    = string
+  default = "moodle-high-scale"
+}
+
+variable "moodle-environment" {
+  type    = string
+  default = "development"
+}
+
+variable "environment_configuration" {
+  type = map
+
+  default = {
+    development = {
+        cosmos_coordinator_vcore_count = 2
+        cosmos_replica_count           = 0
+        cosmos_coordinator_edition     = "GeneralPurpose"
+        cosmos_storage                 = 524288
+        aks_system_nodepool_vmsize     = "Standard_B2s"
+        aks_app_nodepool_vmsize        = "Standard_D4s_v5"
+        aks_jobs_nodepool_vmsize       = "Standard_D4s_v5"
+        aks_redis_nodepool_vmsize      = "Standard_D4s_v5"
+        aks_pgbouncer_nodepool_vmsize  = "Standard_E4s_v5"
+        aks_nodepool_priority          = "Spot"
+        aks_sku_tier                   = "Free"
+        aks_os_disk_type               = "Managed"
+        moodle_data_accel_net          = false
+        moodle_data_vmsize             = "Standard_B2s"
+        moodle_data_disk_type          = "StandardSSD_LRS"
+        moodle_data_disk_size          = "100"
+        moodle_data_disk_tier          = null
+        redis_family                   = "C"
+        redis_sku                      = "Basic"
+        redis_capacity                 = "0"
+        files_quota                    = "100"
+
+    }
+    production = {
+        cosmos_coordinator_vcore_count = 32
+        cosmos_replica_count           = 0
+        cosmos_coordinator_edition     = "GeneralPurpose"
+        cosmos_storage                 = 524288
+        aks_system_nodepool_vmsize     = "Standard_D4ds_v5"
+        aks_app_nodepool_vmsize        = "Standard_D16ds_v5"
+        aks_jobs_nodepool_vmsize       = "Standard_D4ds_v5"
+        aks_redis_nodepool_vmsize      = "Standard_D8ds_v5"
+        aks_pgbouncer_nodepool_vmsize  = "Standard_D4ds_v5"
+        aks_nodepool_priority          = "Regular"
+        aks_sku_tier                   = "Standard"
+        aks_os_disk_type               = "Ephemeral"
+        moodle_data_accel_net          = true
+        moodle_data_vmsize             = "Standard_F4s_v2"
+        moodle_data_disk_type          = "Premium_LRS"
+        moodle_data_disk_size          = "1024"
+        moodle_data_disk_tier          = "P30"
+        redis_family                   = "P"
+        redis_sku                      = "Premium"
+        redis_capacity                 = "2"
+        files_quota                    = "1024"
+    }
+  }
+}
+
+locals {
+
+  settings = "${lookup(var.environment_configuration, var.moodle-environment)}"
+
+}
