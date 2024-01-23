@@ -2,7 +2,7 @@
 
 This project deploys a robust infrastructure on Azure to handle a high scale moodle installation, this environment is able - and tested - to handle **200k concurrent users**.
 
-It uses Azure Kubernetes Service to run Moodle, Azure Storage Account to host course content, Azure CosmosDB for PostgreSQL as its database and Azure Front Door to expose the application to the public as well as caching common used assets.
+It uses Azure Kubernetes Service to run Moodle, Azure Storage Account to host course content, Azure Database for PostgreSQL Flexible Server as its database and Azure Front Door to expose the application to the public as well as caching common used assets.
 
 ![Architecture](moodle-high-scale.png)
 
