@@ -14,45 +14,18 @@ resource "kubernetes_secret" "pgbouncer-config" {
   }
 
   data = {
-    "POSTGRESQL_HOST"                     = azurerm_private_endpoint.moodle-cosmos-pgsql.private_dns_zone_configs.0.record_sets.0.fqdn
+    "POSTGRESQL_HOST"                     = azurerm_postgresql_flexible_server.moodle-db.fqdn
     "POSTGRESQL_PORT"                     = "5432"
-    "POSTGRESQL_DATABASE"                 = "citus"
-    "POSTGRESQL_USERNAME"                 = "citus"
-    "POSTGRESQL_PASSWORD"                 = azurerm_cosmosdb_postgresql_cluster.moodle-cosmos-pgsql.administrator_login_password
-    "PGBOUNCER_DATABASE"                  = "citus"
+    "POSTGRESQL_DATABASE"                 = azurerm_postgresql_flexible_server_database.moodle.name
+    "POSTGRESQL_USERNAME"                 = azurerm_postgresql_flexible_server.moodle-db.administrator_login
+    "POSTGRESQL_PASSWORD"                 = azurerm_postgresql_flexible_server.moodle-db.administrator_password
+    "PGBOUNCER_DATABASE"                  = azurerm_postgresql_flexible_server_database.moodle.name
     "PGBOUNCER_MAX_CLIENT_CONN"           = "20000"
     "PGBOUNCER_DEFAULT_POOL_SIZE"         = "235"
     "PGBOUNCER_POOL_MODE"                 = "transaction"
     "PGBOUNCER_IGNORE_STARTUP_PARAMETERS" = "options"
     "PGBOUNCER_SERVER_TLS_SSLMODE"        = "require"
     "PGBOUNCER_MIN_POOL_SIZE"             = "235"
-  }
-
-}
-
-resource "kubernetes_secret" "pgbouncer-replica-config" {
-
-  count = local.settings["cosmos_replica_count"]
-
-  metadata {
-    name = "pgbouncer-replica-${count.index}-config"
-    namespace = "moodle"
-  }
-
-  data = {
-    "POSTGRESQL_HOST"                     = element(azurerm_private_endpoint.moodle-cosmos-pgsql-replica.*.private_dns_zone_configs.0.record_sets.0.fqdn, count.index)
-    "POSTGRESQL_PORT"                     = 5432
-    "POSTGRESQL_DATABASE"                 = "citus"
-    "POSTGRESQL_USERNAME"                 = "citus"
-    "POSTGRESQL_PASSWORD"                 = azurerm_cosmosdb_postgresql_cluster.moodle-cosmos-pgsql.administrator_login_password
-    "PGBOUNCER_DATABASE"                  = "citus"
-    "PGBOUNCER_MAX_CLIENT_CONN"           = "100"
-    "PGBOUNCER_DEFAULT_POOL_SIZE"         = "100"
-    "PGBOUNCER_POOL_MODE"                 = "transaction"
-    "PGBOUNCER_IGNORE_STARTUP_PARAMETERS" = "options"
-    "PGBOUNCER_SERVER_TLS_SSLMODE"        = "require"
-    "PGBOUNCER_MIN_POOL_SIZE"             = "6"
-    "PGBOUNCER_PORT"                      = count.index + 6433
   }
 
 }
@@ -73,11 +46,10 @@ resource "kubernetes_secret" "moodle-config" {
     "REDIS_CACHE_PORT"    = "6379"
     "DATABASE_HOST"       = "pgbouncer-svc"
     "DATABASE_PORT"       = "6432"
-    "DATABASE_NAME"       = "citus"
-    "DATABASE_USER"       = "citus"
-    "DATABASE_PASSWORD"   = azurerm_cosmosdb_postgresql_cluster.moodle-cosmos-pgsql.administrator_login_password
+    "DATABASE_NAME"       = azurerm_postgresql_flexible_server_database.moodle.name
+    "DATABASE_USER"       = azurerm_postgresql_flexible_server.moodle-db.administrator_login
+    "DATABASE_PASSWORD"   = azurerm_postgresql_flexible_server.moodle-db.administrator_password
     "DATABASE_PREFIX"     = "md_"
-    "DATABASE_REPLICAS"   = join(", ", [ for i, host in azurerm_private_endpoint.moodle-cosmos-pgsql-replica.*.private_dns_zone_configs.0.record_sets.0.fqdn : "['dbhost' => 'pgbouncer-svc', 'dbport' => ${6433 + i}]" ])
     "WWW_ROOT"            = "https://${azurerm_cdn_frontdoor_endpoint.moodle-front-door.host_name}"
     "DATA_ROOT"           = "/var/www/moodledata"
     "ADMIN"               = "admin"

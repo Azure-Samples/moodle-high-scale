@@ -13,11 +13,10 @@ variable "environment_configuration" {
 
   default = {
     development = {
-        cosmos_coordinator_vcore_count = 2
-        cosmos_replica_count           = 0
-        cosmos_coordinator_edition     = "GeneralPurpose"
-        cosmos_storage                 = 524288
-        aks_system_nodepool_vmsize     = "Standard_B2s"
+        azure_database_sku             = "Standard_D2ads_v5"
+        azure_database_storage         = "32768"
+        azure_database_version         = "15"
+        aks_system_nodepool_vmsize     = "GP_Standard_B2s"
         aks_app_nodepool_vmsize        = "Standard_D4s_v5"
         aks_jobs_nodepool_vmsize       = "Standard_D4s_v5"
         aks_redis_nodepool_vmsize      = "Standard_D4s_v5"
@@ -37,10 +36,9 @@ variable "environment_configuration" {
 
     }
     production = {
-        cosmos_coordinator_vcore_count = 32
-        cosmos_replica_count           = 0
-        cosmos_coordinator_edition     = "GeneralPurpose"
-        cosmos_storage                 = 524288
+        azure_database_sku             = "GP_Standard_D32ads_v5"
+        azure_database_storage         = "524288"
+        azure_database_version         = "15"
         aks_system_nodepool_vmsize     = "Standard_D4ds_v5"
         aks_app_nodepool_vmsize        = "Standard_D16ds_v5"
         aks_jobs_nodepool_vmsize       = "Standard_D4ds_v5"
