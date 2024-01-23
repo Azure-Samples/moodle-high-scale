@@ -1,3 +1,6 @@
+provider "azurerm" {
+  features {}
+}
 
 provider "kubernetes" {
     host = "${azurerm_kubernetes_cluster.moodle-high-scale.kube_config.0.host}"

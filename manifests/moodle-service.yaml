@@ -6,7 +6,7 @@ metadata:
   labels:
     app: moodle
 spec:
-  replicas: 100
+  replicas: 1
   selector:
     matchLabels:
       app: moodle
@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: moodle
-        image: <acr-name>.azurecr.io/moodle:v0.1
+        image: moodlehighscale5gxbop.azurecr.io/moodle:v0.1
         ports:
         - containerPort: 80
         volumeMounts:

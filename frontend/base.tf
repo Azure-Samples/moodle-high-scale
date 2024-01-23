@@ -1,3 +1,7 @@
+provider "azurerm" {
+  features {}
+}
+
 variable "moodle-high-scale-rg" {
   type    = string
   default = "moodle-high-scale"
