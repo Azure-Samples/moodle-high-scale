@@ -22,10 +22,10 @@ RUN apt-get install -y software-properties-common unzip cron && \
     php8.1-yaml php8.1-bcmath poppler-utils ffmpeg gpac \
     graphviz aspell aspell-pt-br ghostscript texlive texlive
 
-RUN wget -q https://github.com/moodle/moodle/archive/refs/heads/MOODLE_402_STABLE.zip && \
-    unzip -q MOODLE_402_STABLE.zip && \
-    mv moodle-MOODLE_402_STABLE/* /var/www/html/ && \
-    rm -rf master.zip moodle-MOODLE_402_STABLE /var/www/html/.github /var/www/html/.grunt
+RUN wget -q https://github.com/moodle/moodle/archive/refs/heads/MOODLE_403_STABLE.zip && \
+    unzip -q MOODLE_403_STABLE.zip && \
+    mv moodle-MOODLE_403_STABLE/* /var/www/html/ && \
+    rm -rf master.zip moodle-MOODLE_403_STABLE /var/www/html/.github /var/www/html/.grunt
 
 COPY --chown=www-data:www-data files/config.php /var/www/html/config.php.template
 

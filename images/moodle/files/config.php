@@ -17,9 +17,6 @@ $CFG->dboptions = array (
   'dbsocket' => false,
   'dbhandlesoptions' => false,
   'fetchbuffersize' => 0,
-  'readonly' => [
-    'instance' => [ $DATABASE_REPLICAS ],
-  ],
 );
 
 $CFG->wwwroot   = '$WWW_ROOT';
