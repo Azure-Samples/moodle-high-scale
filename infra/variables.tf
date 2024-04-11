@@ -24,11 +24,6 @@ variable "environment_configuration" {
         aks_nodepool_priority          = "Spot"
         aks_sku_tier                   = "Free"
         aks_os_disk_type               = "Managed"
-        moodle_data_accel_net          = false
-        moodle_data_vmsize             = "Standard_B2s"
-        moodle_data_disk_type          = "StandardSSD_LRS"
-        moodle_data_disk_size          = "100"
-        moodle_data_disk_tier          = null
         redis_family                   = "C"
         redis_sku                      = "Basic"
         redis_capacity                 = "0"
