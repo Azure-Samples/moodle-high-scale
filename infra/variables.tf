@@ -13,7 +13,7 @@ variable "environment_configuration" {
 
   default = {
     development = {
-        azure_database_sku             = "Standard_D2ads_v5"
+        azure_database_sku             = "GP_Standard_D2ads_v5"
         azure_database_storage         = "32768"
         azure_database_version         = "15"
         aks_system_nodepool_vmsize     = "GP_Standard_B2s"
