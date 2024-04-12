@@ -5,7 +5,7 @@ resource "random_string" "storage-account-moodle-data" {
 }
 
 resource "azurerm_storage_account" "moodle-data" {
-  name                     = "moodledata${random_string.storage-account.result}"
+  name                     = "moodledata${random_string.storage-account-moodle-data.result}"
   resource_group_name      = data.azurerm_resource_group.moodle-high-scale.name
   location                 = data.azurerm_resource_group.moodle-high-scale.location
   account_kind             = "StorageV2"
@@ -21,7 +21,7 @@ resource "azurerm_storage_share" "moodle-data" {
   enabled_protocol      = "NFS"
 }
 
-resource "azurerm_private_endpoint" "moodle-assets" {
+resource "azurerm_private_endpoint" "moodle-data" {
   name                = "moodle-data"
   location            = data.azurerm_resource_group.moodle-high-scale.location
   resource_group_name = data.azurerm_resource_group.moodle-high-scale.name
