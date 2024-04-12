@@ -8,7 +8,7 @@ resource "azurerm_storage_account" "moodle-data" {
   name                     = "moodledata${random_string.storage-account-moodle-data.result}"
   resource_group_name      = data.azurerm_resource_group.moodle-high-scale.name
   location                 = data.azurerm_resource_group.moodle-high-scale.location
-  account_kind             = "StorageV2"
+  account_kind             = "FileStorage"
   account_tier             = "Premium"
   account_replication_type = "LRS"
 
