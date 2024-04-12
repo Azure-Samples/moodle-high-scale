@@ -1,4 +1,4 @@
-resource "random_string" "storage-account" {
+resource "random_string" "storage-account-moodle-assets" {
   length           = 6
   special          = false
   upper            = false
