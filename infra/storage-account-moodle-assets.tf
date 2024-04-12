@@ -8,7 +8,7 @@ resource "azurerm_storage_account" "moodle-assets" {
   name                     = "moodleassets${random_string.storage-account.result}"
   resource_group_name      = data.azurerm_resource_group.moodle-high-scale.name
   location                 = data.azurerm_resource_group.moodle-high-scale.location
-  account_tier             = "Premium"
+  account_tier             = "Standard"
   account_replication_type = "LRS"
 
 }
@@ -23,13 +23,6 @@ resource "azurerm_storage_container" "config" {
   name                  = "config"
   storage_account_name  = azurerm_storage_account.moodle-assets.name
   container_access_type = "private"
-}
-
-resource "azurerm_storage_share" "moodle-data" {
-  name                 = "moodle-data"
-  storage_account_name = azurerm_storage_account.moodle-assets.name
-  quota                = 100
-  enabled_protocol     = "NFS"
 }
 
 resource "azurerm_private_endpoint" "moodle-assets" {
