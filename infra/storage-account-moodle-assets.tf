@@ -5,7 +5,7 @@ resource "random_string" "storage-account-moodle-assets" {
 }
 
 resource "azurerm_storage_account" "moodle-assets" {
-  name                     = "moodleassets${random_string.storage-account.result}"
+  name                     = "moodleassets${random_string.storage-account-moodle-assets.result}"
   resource_group_name      = data.azurerm_resource_group.moodle-high-scale.name
   location                 = data.azurerm_resource_group.moodle-high-scale.location
   account_tier             = "Standard"
