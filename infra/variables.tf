@@ -42,11 +42,6 @@ variable "environment_configuration" {
         aks_nodepool_priority          = "Regular"
         aks_sku_tier                   = "Standard"
         aks_os_disk_type               = "Ephemeral"
-        moodle_data_accel_net          = true
-        moodle_data_vmsize             = "Standard_F4s_v2"
-        moodle_data_disk_type          = "Premium_LRS"
-        moodle_data_disk_size          = "1024"
-        moodle_data_disk_tier          = "P30"
         redis_family                   = "P"
         redis_sku                      = "Premium"
         redis_capacity                 = "2"
