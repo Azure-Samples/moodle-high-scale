@@ -5,6 +5,8 @@ RUN apt-get update && \
     echo "pt_BR.UTF-8 UTF-8" > /etc/locale.gen && \
     locale-gen    
 
+RUN apt-get install nfs-common -y
+
 ENV LC_ALL pt_BR.UTF-8
 ENV LANG pt_BR.UTF-8
 ENV LANGUAGE pt_BR.UTF-8
