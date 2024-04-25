@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: moodle
-        image: moodlehighscale5gxbop.azurecr.io/moodle:v0.1
+        image: moodlehighscale9yu78c.azurecr.io/moodle:v4.4.0
         ports:
         - containerPort: 80
         volumeMounts:
