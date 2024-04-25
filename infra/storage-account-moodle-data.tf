@@ -16,7 +16,7 @@ resource "azurerm_storage_account" "moodle-data" {
 
 resource "azurerm_storage_share" "moodle-data" {
   name                  = "moodle-data"
-  storage_account_name  = azurerm_storage_account.moodle-assets.name
+  storage_account_name  = azurerm_storage_account.moodle-data.name
   quota                 = 100
   enabled_protocol      = "NFS"
 }
@@ -30,7 +30,7 @@ resource "azurerm_private_endpoint" "moodle-data" {
   private_service_connection {
     name                           = "data.azurerm_resource_group.moodle-high-scale.location"
     private_connection_resource_id = azurerm_storage_account.moodle-data.id
-    subresource_names              = ["nfs"]
+    subresource_names              = ["file"]
     is_manual_connection           = false
   }
 
