@@ -20,18 +20,6 @@ $ terraform apply -var moodle-environment=production
 $ az aks get-credentials --name moodle-high-scale --resource-group <resource-group>
 ```
 
-Provision the NFS server to host moodle data (you will need a bastion instance for this to work)
-
-_Add your username as a Virtual Machine Admin User to moodle's data vm_
-
-```
-$ az network bastion ssh --name bastion --resource-group <resource-group> --target-resource-id <moodle-data-vm-id> --auth-type "AAD"
-$ # add your ~/.ssh/id_rsa.pub content to .ssh/authorized_keys
-$ cd ../ansible
-$ az network bastion tunnel --name bastion --resource-group <resource-group> --target-resource-id <moodle-data-vm-id> --resource-port 22 --port 2200
-$ ansible-playbook -u "<aad-user>" --ssh-extra-args "-p 2200" -i localhost, nfs-provisioning.yaml
-```
-
 Provision the Redis Cluster.
 
 ```
