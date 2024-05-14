@@ -34,6 +34,8 @@ Wait for all the replicas to be running.
 ```
 $ ./init.sh
 ```
+Type 'yes' when prompted.
+
 
 Deploy Moodle and its services.
 
