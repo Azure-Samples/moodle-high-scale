@@ -13,6 +13,7 @@ Provision the infrastructure.
 ```
 $ cd infra/
 $ az login
+$ az group create --name moodle-high-scale --location <region>
 $ terraform init
 $ terraform plan -var moodle-environment=production
 $ terraform apply -var moodle-environment=production
