@@ -38,3 +38,6 @@ terraform.rc
 *.lock.hcl
 
 tests
+
+#azurite
+*azurite*

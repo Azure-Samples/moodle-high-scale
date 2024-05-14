@@ -48,13 +48,15 @@ $ ./init.sh
 
 Deploy Moodle and its services.
 
-_Change image in moodle-service.yaml_
+_Change image in moodle-service.yaml and also adjust the storage account name in the nfs-pv.yaml_
 
 ```
 $ cd ../../images/moodle
 $ az acr build --registry moodlehighscale<suffix> -t moodle:v0.1 --file Dockerfile .
 $ cd ../../manifests
 $ kubectl apply -f pgbouncer-deployment.yaml
+$ kubectl apply -f nfs-pv.yaml
+$ kubectl apply -f nfs-pvc.yaml
 $ kubectl apply -f moodle-service.yaml
 $ kubectl -n moodle get svc --watch
 ```
