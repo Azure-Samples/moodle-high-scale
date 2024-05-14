@@ -39,7 +39,7 @@ Type 'yes' when prompted.
 
 Deploy Moodle and its services.
 
-_Change image in moodle-service.yaml and also adjust the storage account name in the nfs-pv.yaml_ (see commented lines in the files)
+_Change image in moodle-service.yaml and also adjust the moodle data storage account name in the nfs-pv.yaml_ (see commented lines in the files)
 
 ```
 $ cd ../../images/moodle
