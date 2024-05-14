@@ -48,7 +48,7 @@ $ ./init.sh
 
 Deploy Moodle and its services.
 
-_Change image in moodle-service.yaml and also adjust the storage account name in the nfs-pv.yaml_
+_Change image in moodle-service.yaml and also adjust the storage account name in the nfs-pv.yaml_ (see commented lines in the files)
 
 ```
 $ cd ../../images/moodle
