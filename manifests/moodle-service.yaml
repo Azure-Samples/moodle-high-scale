@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: moodle
-        image: moodlehighscaleu0nvrx.azurecr.io/moodle:v0.1 # edit with your acr and image
+        image: <acr-name>.azurecr.io/moodle:v0.1 # edit with your acr and image
         imagePullPolicy: Always
         ports:
         - containerPort: 80
