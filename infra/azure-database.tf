@@ -38,3 +38,10 @@ resource "azurerm_private_dns_zone" "moodle-cosmos-pgsql" {
   name                = "privatelink.postgres.database.azure.com"
   resource_group_name = data.azurerm_resource_group.moodle-high-scale.name
 }
+
+resource "azurerm_private_dns_zone_virtual_network_link" "moodle-pgsql" {
+  name = "moodle-pgsql"
+  resource_group_name = data.azurerm_resource_group.moodle-high-scale
+  private_dns_zone_name = azurerm_private_dns_zone.moodle-cosmos-pgsql.name
+  virtual_network_id = azurerm_virtual_network.moodle-high-scale.id
+}
