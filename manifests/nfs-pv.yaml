@@ -16,10 +16,10 @@ spec:
     driver: file.csi.azure.com
     volumeHandle: unique-volumeid  # make sure this volumeid is unique for every identical share in the cluster
     volumeAttributes:
-      storageAccount: moodledatagr5ckj # edit with storage account name
+      storageAccount: <storage-account-name> # edit with storage account name
       resourceGroup: moodle-high-scale  # optional, only set this when storage account is not in the same resource group as node
       shareName: moodle-data
-      server: moodledatagr5ckj.privatelink.file.core.windows.net # edit with storage account name
+      server: <storage-account-name>.privatelink.file.core.windows.net # edit with storage account name
       protocol: nfs
     nodeStageSecretRef:
       name: moodle-config
