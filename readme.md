@@ -13,22 +13,11 @@ Provision the infrastructure.
 ```
 $ cd infra/
 $ az login
+$ az group create --name moodle-high-scale --location <region>
 $ terraform init
 $ terraform plan -var moodle-environment=production
 $ terraform apply -var moodle-environment=production
 $ az aks get-credentials --name moodle-high-scale --resource-group <resource-group>
-```
-
-Provision the NFS server to host moodle data (you will need a bastion instance for this to work)
-
-_Add your username as a Virtual Machine Admin User to moodle's data vm_
-
-```
-$ az network bastion ssh --name bastion --resource-group <resource-group> --target-resource-id <moodle-data-vm-id> --auth-type "AAD"
-$ # add your ~/.ssh/id_rsa.pub content to .ssh/authorized_keys
-$ cd ../ansible
-$ az network bastion tunnel --name bastion --resource-group <resource-group> --target-resource-id <moodle-data-vm-id> --resource-port 22 --port 2200
-$ ansible-playbook -u "<aad-user>" --ssh-extra-args "-p 2200" -i localhost, nfs-provisioning.yaml
 ```
 
 Provision the Redis Cluster.
@@ -45,16 +34,20 @@ Wait for all the replicas to be running.
 ```
 $ ./init.sh
 ```
+Type 'yes' when prompted.
+
 
 Deploy Moodle and its services.
 
-_Change image in moodle-service.yaml_
+_Change image in moodle-service.yaml and also adjust the moodle data storage account name in the nfs-pv.yaml_ (see commented lines in the files)
 
 ```
 $ cd ../../images/moodle
 $ az acr build --registry moodlehighscale<suffix> -t moodle:v0.1 --file Dockerfile .
 $ cd ../../manifests
 $ kubectl apply -f pgbouncer-deployment.yaml
+$ kubectl apply -f nfs-pv.yaml
+$ kubectl apply -f nfs-pvc.yaml
 $ kubectl apply -f moodle-service.yaml
 $ kubectl -n moodle get svc --watch
 ```

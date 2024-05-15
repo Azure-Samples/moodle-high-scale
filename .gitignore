@@ -34,4 +34,10 @@ override.tf.json
 .terraformrc
 terraform.rc
 
+#Ignore terraform lock files
+*.lock.hcl
+
 tests
+
+#azurite
+*azurite*

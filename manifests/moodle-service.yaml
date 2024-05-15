@@ -17,7 +17,8 @@ spec:
     spec:
       containers:
       - name: moodle
-        image: moodlehighscale5gxbop.azurecr.io/moodle:v0.1
+        image: <acr-name>.azurecr.io/moodle:v0.1 # edit with your acr and image
+        imagePullPolicy: Always
         ports:
         - containerPort: 80
         volumeMounts:
@@ -48,9 +49,8 @@ spec:
         agentpool: app
       volumes:
       - name: moodle-data-volume
-        nfs:
-          server: moodle-data
-          path: /data/moodle-data
+        persistentVolumeClaim:
+          claimName: moodle-data
       - name: moodle-local-data
         emptyDir:
           sizeLimit: 1Gi

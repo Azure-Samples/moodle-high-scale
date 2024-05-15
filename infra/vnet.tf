@@ -19,13 +19,6 @@ resource "azurerm_subnet" "private-endpoints" {
   address_prefixes     = ["10.254.4.0/24"]
 }
 
-resource "azurerm_subnet" "bastion" {
-  name                 = "AzureBastionSubnet"
-  resource_group_name  = data.azurerm_resource_group.moodle-high-scale.name 
-  virtual_network_name = azurerm_virtual_network.moodle-high-scale.name
-  address_prefixes     = ["10.254.5.0/24"]
-}
-
 resource "azurerm_subnet" "azure-database-pg" {
   name                 = "azure-database-pg"
   resource_group_name  = data.azurerm_resource_group.moodle-high-scale.name 
