@@ -17,7 +17,7 @@ $ az group create --name moodle-high-scale --location <region>
 $ terraform init
 $ terraform plan -var moodle-environment=production
 $ terraform apply -var moodle-environment=production
-$ az aks get-credentials --name moodle-high-scale --resource-group <resource-group>
+$ az aks get-credentials --name moodle-high-scale --resource-group moodle-high-scale
 ```
 
 Provision the Redis Cluster.
