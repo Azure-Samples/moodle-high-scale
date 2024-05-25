@@ -45,6 +45,7 @@ resource "kubernetes_secret" "moodle-config" {
     "REDIS_CACHE_HOST"        = "redis-cache-cluster-svc"
     "REDIS_CACHE_PORT"        = "6379"
     "DATABASE_HOST"           = "pgbouncer-svc"
+    "DATABASE_HOST_READ"      = "pgbouncer-read-svc"
     "DATABASE_PORT"           = "6432"
     "DATABASE_NAME"           = azurerm_postgresql_flexible_server_database.moodle.name
     "DATABASE_USER"           = azurerm_postgresql_flexible_server.moodle-db.administrator_login
