@@ -29,6 +29,28 @@ resource "kubernetes_secret" "pgbouncer-config" {
 
 }
 
+resource "kubernetes_secret" "pgbouncer-read-replica-config" {
+  metadata {
+    name = "pgbouncer-read-replica-config"
+    namespace = "moodle"
+  }
+
+  data = {
+    "DB_HOST"                   = azurerm_postgresql_flexible_server.moodle-db-read-replica.fqdn
+    "DB_PORT"                   = "5432"
+    "DB_NAME"                   = azurerm_postgresql_flexible_server_database.moodle.name
+    "DB_USER"                   = azurerm_postgresql_flexible_server.moodle-db-read-replica.administrator_login
+    "DB_PASSWORD"               = azurerm_postgresql_flexible_server.moodle-db-read-replica.administrator_password
+    "MAX_CLIENT_CONN"           = "20000"
+    "DEFAULT_POOL_SIZE"         = "235"
+    "POOL_MODE"                 = "session"
+    "IGNORE_STARTUP_PARAMETERS" = "options"
+    "SERVER_TLS_SSLMODE"        = "require"
+    "MIN_POOL_SIZE"             = "235"
+  }
+
+}
+
 resource "kubernetes_secret" "moodle-config" {
   metadata {
     name = "moodle-config"
