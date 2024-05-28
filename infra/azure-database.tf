@@ -43,6 +43,8 @@ resource "azurerm_postgresql_flexible_server" "moodle-db-read-replica" {
   sku_name               = local.settings["azure_database_read_replica_sku"]
   create_mode            = "Replica"  # Set as a standby replica
   source_server_id       = azurerm_postgresql_flexible_server.moodle-db.id
+  administrator_login    = "psqladmin"
+  administrator_password = "${random_string.moodle-db-password.result}"
   zone                   = "1"
 }
 

@@ -15,9 +15,9 @@ spec:
     spec:
       containers:
       - name: pgbouncer
-        image: <acr-name>.azurecr.io/pgbouncer:v0.1 # edit with your acr and image
+        image: moodlehighscalewo9e7d.azurecr.io/pgbouncer:v0.1 # edit with your acr and image
         ports:
-        - containerPort: 6432
+        - containerPort: 5432
         envFrom:
         - secretRef:
             name: pgbouncer-config
@@ -30,18 +30,18 @@ spec:
             memory: 4Gi
         livenessProbe:
           tcpSocket:
-            port: 6432
+            port: 5432
           initialDelaySeconds: 15
           periodSeconds: 5
           failureThreshold: 3
         readinessProbe:
           tcpSocket:
-            port: 6432
+            port: 5432
           initialDelaySeconds: 15
           periodSeconds: 5
         startupProbe:
           tcpSocket:
-            port: 6432
+            port: 5432
           failureThreshold: 30
           periodSeconds: 5
       tolerations:
@@ -68,8 +68,8 @@ spec:
   ports:
     - name: pgbouncer-port
       protocol: TCP
-      port: 6432
-      targetPort: 6432
+      port: 5432
+      targetPort: 5432
 ---
 apiVersion: apps/v1
 kind: Deployment
@@ -88,9 +88,9 @@ spec:
     spec:
       containers:
       - name: pgbouncer-readreplica
-        image: <acr-name>.azurecr.io/pgbouncer:v0.1 # edit with your acr and image
+        image: moodlehighscalewo9e7d.azurecr.io/pgbouncer:v0.1 # edit with your acr and image
         ports:
-        - containerPort: 6432
+        - containerPort: 5432
         envFrom:
         - secretRef:
             name: pgbouncer-config-read-replica
@@ -103,18 +103,18 @@ spec:
             memory: 4Gi
         livenessProbe:
           tcpSocket:
-            port: 6432
+            port: 5432
           initialDelaySeconds: 15
           periodSeconds: 5
           failureThreshold: 3
         readinessProbe:
           tcpSocket:
-            port: 6432
+            port: 5432
           initialDelaySeconds: 15
           periodSeconds: 5
         startupProbe:
           tcpSocket:
-            port: 6432
+            port: 5432
           failureThreshold: 30
           periodSeconds: 5
       tolerations:
@@ -132,7 +132,7 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: pgbouncer-svc-readreplica
+  name: pgbouncer-read-svc
   namespace: moodle
 spec:
   sessionAffinity: ClientIP
@@ -141,5 +141,5 @@ spec:
   ports:
     - name: pgbouncer-readreplica-port
       protocol: TCP
-      port: 6432
-      targetPort: 6432
+      port: 5432
+      targetPort: 5432
