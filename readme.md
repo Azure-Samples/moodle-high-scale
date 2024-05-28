@@ -39,11 +39,13 @@ Type 'yes' when prompted.
 
 Deploy Moodle and its services.
 
-_Change image in moodle-service.yaml and also adjust the moodle data storage account name in the nfs-pv.yaml_ (see commented lines in the files)
+_After building images for moodle and pgbouncer, ghange them in moodle-service.yaml and pgbouncer-deployment.yaml, and also adjust the moodle data storage account name in the nfs-pv.yaml_ (see commented lines in the files)
 
 ```
 $ cd ../../images/moodle
 $ az acr build --registry moodlehighscale<suffix> -t moodle:v0.1 --file Dockerfile .
+$ cd ../pgbouncer
+$ az acr build --registry moodlehighscale<suffix> -t pgbouncer:v0.1 --file Dockerfile .
 $ cd ../../manifests
 $ kubectl apply -f pgbouncer-deployment.yaml
 $ kubectl apply -f nfs-pv.yaml

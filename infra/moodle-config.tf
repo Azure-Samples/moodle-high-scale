@@ -29,7 +29,7 @@ resource "kubernetes_secret" "pgbouncer-config" {
 
 }
 
-resource "kubernetes_secret" "pgbouncer-read-replica-config" {
+resource "kubernetes_secret" "pgbouncer-config-read-replica-config" {
   metadata {
     name = "pgbouncer-read-replica-config"
     namespace = "moodle"
