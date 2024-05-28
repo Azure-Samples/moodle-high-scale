@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: pgbouncer
-        image: moodlehighscalewo9e7d.azurecr.io/pgbouncer:v0.1 # edit with your acr and image
+        image: <acr-name>.azurecr.io/pgbouncer:v0.1 # edit with your acr and image
         ports:
         - containerPort: 5432
         envFrom:
@@ -88,7 +88,7 @@ spec:
     spec:
       containers:
       - name: pgbouncer-readreplica
-        image: moodlehighscalewo9e7d.azurecr.io/pgbouncer:v0.1 # edit with your acr and image
+        image: <acr-name>.azurecr.io/pgbouncer:v0.1 # edit with your acr and image
         ports:
         - containerPort: 5432
         envFrom:
