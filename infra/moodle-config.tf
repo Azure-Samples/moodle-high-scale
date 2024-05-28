@@ -31,7 +31,7 @@ resource "kubernetes_secret" "pgbouncer-config" {
 
 resource "kubernetes_secret" "pgbouncer-config-read-replica-config" {
   metadata {
-    name = "pgbouncer-read-replica-config"
+    name = "pgbouncer-config-read-replica-config"
     namespace = "moodle"
   }
 
@@ -43,7 +43,7 @@ resource "kubernetes_secret" "pgbouncer-config-read-replica-config" {
     "DB_PASSWORD"               = azurerm_postgresql_flexible_server.moodle-db-read-replica.administrator_password
     "MAX_CLIENT_CONN"           = "20000"
     "DEFAULT_POOL_SIZE"         = "235"
-    "POOL_MODE"                 = "session"
+    "POOL_MODE"                 = "transaction"
     "IGNORE_STARTUP_PARAMETERS" = "options"
     "SERVER_TLS_SSLMODE"        = "require"
     "MIN_POOL_SIZE"             = "235"
