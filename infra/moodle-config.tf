@@ -14,18 +14,39 @@ resource "kubernetes_secret" "pgbouncer-config" {
   }
 
   data = {
-    "POSTGRESQL_HOST"                     = azurerm_postgresql_flexible_server.moodle-db.fqdn
-    "POSTGRESQL_PORT"                     = "5432"
-    "POSTGRESQL_DATABASE"                 = azurerm_postgresql_flexible_server_database.moodle.name
-    "POSTGRESQL_USERNAME"                 = azurerm_postgresql_flexible_server.moodle-db.administrator_login
-    "POSTGRESQL_PASSWORD"                 = azurerm_postgresql_flexible_server.moodle-db.administrator_password
-    "PGBOUNCER_DATABASE"                  = azurerm_postgresql_flexible_server_database.moodle.name
-    "PGBOUNCER_MAX_CLIENT_CONN"           = "20000"
-    "PGBOUNCER_DEFAULT_POOL_SIZE"         = "235"
-    "PGBOUNCER_POOL_MODE"                 = "transaction"
-    "PGBOUNCER_IGNORE_STARTUP_PARAMETERS" = "options"
-    "PGBOUNCER_SERVER_TLS_SSLMODE"        = "require"
-    "PGBOUNCER_MIN_POOL_SIZE"             = "235"
+    "DB_HOST"                   = azurerm_postgresql_flexible_server.moodle-db.fqdn
+    "DB_PORT"                   = "5432"
+    "DB_NAME"                   = azurerm_postgresql_flexible_server_database.moodle.name
+    "DB_USER"                   = azurerm_postgresql_flexible_server.moodle-db.administrator_login
+    "DB_PASSWORD"               = azurerm_postgresql_flexible_server.moodle-db.administrator_password
+    "MAX_CLIENT_CONN"           = "20000"
+    "DEFAULT_POOL_SIZE"         = "235"
+    "POOL_MODE"                 = "session"
+    "IGNORE_STARTUP_PARAMETERS" = "options"
+    "SERVER_TLS_SSLMODE"        = "require"
+    "MIN_POOL_SIZE"             = "235"
+  }
+
+}
+
+resource "kubernetes_secret" "pgbouncer-config-read-replica" {
+  metadata {
+    name = "pgbouncer-config-read-replica"
+    namespace = "moodle"
+  }
+
+  data = {
+    "DB_HOST"                   = azurerm_postgresql_flexible_server.moodle-db-read-replica.fqdn
+    "DB_PORT"                   = "5432"
+    "DB_NAME"                   = azurerm_postgresql_flexible_server_database.moodle.name
+    "DB_USER"                   = azurerm_postgresql_flexible_server.moodle-db-read-replica.administrator_login
+    "DB_PASSWORD"               = azurerm_postgresql_flexible_server.moodle-db-read-replica.administrator_password
+    "MAX_CLIENT_CONN"           = "20000"
+    "DEFAULT_POOL_SIZE"         = "235"
+    "POOL_MODE"                 = "transaction"
+    "IGNORE_STARTUP_PARAMETERS" = "options"
+    "SERVER_TLS_SSLMODE"        = "require"
+    "MIN_POOL_SIZE"             = "235"
   }
 
 }
@@ -45,7 +66,8 @@ resource "kubernetes_secret" "moodle-config" {
     "REDIS_CACHE_HOST"        = "redis-cache-cluster-svc"
     "REDIS_CACHE_PORT"        = "6379"
     "DATABASE_HOST"           = "pgbouncer-svc"
-    "DATABASE_PORT"           = "6432"
+    "DATABASE_HOST_READ"      = "pgbouncer-read-svc"
+    "DATABASE_PORT"           = "5432"
     "DATABASE_NAME"           = azurerm_postgresql_flexible_server_database.moodle.name
     "DATABASE_USER"           = azurerm_postgresql_flexible_server.moodle-db.administrator_login
     "DATABASE_PASSWORD"       = azurerm_postgresql_flexible_server.moodle-db.administrator_password

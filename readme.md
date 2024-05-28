@@ -39,12 +39,19 @@ Type 'yes' when prompted.
 
 Deploy Moodle and its services.
 
-_Change image in moodle-service.yaml and also adjust the moodle data storage account name in the nfs-pv.yaml_ (see commented lines in the files)
+
 
 ```
 $ cd ../../images/moodle
 $ az acr build --registry moodlehighscale<suffix> -t moodle:v0.1 --file Dockerfile .
+$ cd ../pgbouncer
+$ az acr build --registry moodlehighscale<suffix> -t pgbouncer:v0.1 --file Dockerfile .
 $ cd ../../manifests
+
+```
+_After building images for moodle and pgbouncer, replace <acr-name> with the name of the container registry created by terraform in teh first steps, and also replace <storage-account-name> with the moodle data storage account name in the nfs-pv.yaml_ (see commented lines in the files)
+
+```
 $ kubectl apply -f pgbouncer-deployment.yaml
 $ kubectl apply -f nfs-pv.yaml
 $ kubectl apply -f nfs-pvc.yaml
@@ -61,7 +68,7 @@ $ terraform plan
 $ terraform apply
 ```
 
-Approve the private endpoint connection request from Frontdoor in moodle-svc-pls resource.
+Approve the private endpoint connection request from Frontdoor in moodle-svc-pls resource in the following path in the Azure Portal:
 
 _Private Link Services > moodle-svs-pls > Private Endpoint Connections > Select the request from Front Door and click on Approve._
 
@@ -74,7 +81,7 @@ $ php /var/www/html/admin/cli/install_database.php --adminuser=admin_user --admi
 
 Deploy Moodle Cron.
 
-_Change image in moodle-cron.yaml_
+_Open moodle-cron.yaml and replace <acr-name> with the name of the container registry created by terraform in the first steps_
 
 ```
 $ cd ../manifests

@@ -15,9 +15,9 @@ spec:
     spec:
       containers:
       - name: pgbouncer
-        image: bitnami/pgbouncer:1.19.1
+        image: <acr-name>.azurecr.io/pgbouncer:v0.1 # edit with your acr and image
         ports:
-        - containerPort: 6432
+        - containerPort: 5432
         envFrom:
         - secretRef:
             name: pgbouncer-config
@@ -30,18 +30,18 @@ spec:
             memory: 4Gi
         livenessProbe:
           tcpSocket:
-            port: 6432
+            port: 5432
           initialDelaySeconds: 15
           periodSeconds: 5
           failureThreshold: 3
         readinessProbe:
           tcpSocket:
-            port: 6432
+            port: 5432
           initialDelaySeconds: 15
           periodSeconds: 5
         startupProbe:
           tcpSocket:
-            port: 6432
+            port: 5432
           failureThreshold: 30
           periodSeconds: 5
       tolerations:
@@ -68,5 +68,78 @@ spec:
   ports:
     - name: pgbouncer-port
       protocol: TCP
-      port: 6432
-      targetPort: 6432
+      port: 5432
+      targetPort: 5432
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: pgbouncer-readreplica
+  namespace: moodle
+spec:
+  replicas: 4
+  selector:
+    matchLabels:
+      name: pgbouncer-readreplica
+  template:
+    metadata:
+      labels:
+        name: pgbouncer-readreplica
+    spec:
+      containers:
+      - name: pgbouncer-readreplica
+        image: <acr-name>.azurecr.io/pgbouncer:v0.1 # edit with your acr and image
+        ports:
+        - containerPort: 5432
+        envFrom:
+        - secretRef:
+            name: pgbouncer-config-read-replica
+        resources:
+          limits:
+            cpu: 1000m
+            memory: 4Gi
+          requests:
+            cpu: 1000m
+            memory: 4Gi
+        livenessProbe:
+          tcpSocket:
+            port: 5432
+          initialDelaySeconds: 15
+          periodSeconds: 5
+          failureThreshold: 3
+        readinessProbe:
+          tcpSocket:
+            port: 5432
+          initialDelaySeconds: 15
+          periodSeconds: 5
+        startupProbe:
+          tcpSocket:
+            port: 5432
+          failureThreshold: 30
+          periodSeconds: 5
+      tolerations:
+      - key: "kubernetes.azure.com/scalesetpriority"
+        operator: "Equal"
+        value: "spot"
+        effect: "NoSchedule"
+      - key: "workload-type"
+        operator: "Equal"
+        value: "pgbouncer"
+        effect: "NoSchedule"
+      nodeSelector:
+        agentpool: pgbouncer
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: pgbouncer-read-svc
+  namespace: moodle
+spec:
+  sessionAffinity: ClientIP
+  selector:
+    name: pgbouncer-readreplica
+  ports:
+    - name: pgbouncer-readreplica-port
+      protocol: TCP
+      port: 5432
+      targetPort: 5432

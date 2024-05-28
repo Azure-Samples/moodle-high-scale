@@ -15,8 +15,13 @@ $CFG->dboptions = array (
   'dbpersist' => true,
   'dbport' => $DATABASE_PORT,
   'dbsocket' => false,
-  'dbhandlesoptions' => false,
+  'dbhandlesoptions' => true,
   'fetchbuffersize' => 0,
+  'readonly' => [
+    'instance' => '$DATABASE_HOST_READ',
+    'connecttimeout' => 2,
+    'latency' => 0.5,
+  ]
 );
 
 $CFG->wwwroot   = '$WWW_ROOT';
